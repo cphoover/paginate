@@ -1,14 +1,17 @@
-
+;
 Paginator = function(_selector, _paginationSelector){
-    this.numItems = 10;
-    this.articlesContainer = document.querySelector(_selector);
-    this.paginationContainer = document.querySelector(_paginationSelector);
+
+    this.numItems = 5;
+    
+    this.articlesContainer = document.getElementById(_selector);
+    this.paginationContainer = document.getElementById(_paginationSelector);
+
     this.activePage = 1;
     this.perPage = 5;
     this.pages = new Array();
 
     this.init();
-}
+};
 
 Paginator.prototype.addEvent = function( obj, type, fn ) {
   if ( obj.attachEvent ) {
@@ -30,25 +33,36 @@ Paginator.prototype.removeEvent = function( obj, type, fn ) {
 Paginator.prototype.setHandlers = function(){
         var self = this;
         this.addEvent(this.paginationContainer, 'click', function(e){
-                        var linkContents = e.target.innerHTML.replace(/(<([^>]+)>)/ig,"");
+                        var linkContents = (e.target || e.srcElement).innerHTML.replace(/(<([^>]+)>)/ig,"");
 
-                        if(linkContents == 'Start'){
+                        if(linkContents === 'Start'){
                                 self.setActivePage(1);
-                                return true
-                        }
-
-                        if(linkContents == "End"){
-                                self.setActivePage(self.pages.length);
                                 return true;
                         }
 
-                        self.setActivePage(parseInt(linkContents));
+                        if(linkContents === "End"){
+                                self.setActivePage(self.pages.length);
+                                return true;
+                        }
+                        
+                        var newPage =parseInt(linkContents);                       
+
+                        if(!isNaN(newPage)) self.setActivePage(newPage);
+
                         return true;
-        })
+        });
 };
 
 Paginator.prototype.chunk = function(arr, len) {
-   arr = Array.prototype.slice.call(arr);
+   
+   // convert what we are passed to array if it is not one (ex. nodeList, string... etc)
+   if(!(arr instanceof Array)){
+        tempArray = new Array();
+        for(var i=0; i<arr.length; i++){
+                tempArray[i] = arr[i];
+        }
+        arr = tempArray;
+   }
 
   var chunks = [],
       i = 0,
@@ -59,10 +73,10 @@ Paginator.prototype.chunk = function(arr, len) {
   }
 
   return chunks;
-}
+};
 
 Paginator.prototype.createItem = function(_contents, _class){
-        var classStr = (typeof _class != "undefined" && _class != "") ? _class : false;
+        var classStr = (typeof _class !== "undefined" && _class != "") ? _class : false;
         var item = document.createElement('li');
 
         if(classStr) item.className = classStr;
@@ -71,7 +85,7 @@ Paginator.prototype.createItem = function(_contents, _class){
         link.innerHTML = _contents;
         item.appendChild(link);
         return item;
-}
+};
 
 //@todo refactor the shit out of this stinky ass function.
 Paginator.prototype.displayPagination = function(){
@@ -90,7 +104,7 @@ Paginator.prototype.displayPagination = function(){
         while( counter  < middle){
                 var pageNum =  (this.activePage - (middle - counter));
                 var tehPage = this.pages[pageNum - 1] ;
-                if(typeof tehPage != "undefined"){
+                if(typeof tehPage !== "undefined"){
                         //append it to the pager list
                         pager.appendChild(this.createItem(pageNum));
                         left --;
@@ -108,7 +122,7 @@ Paginator.prototype.displayPagination = function(){
                var pageNum =  (this.activePage + counter); 
                var tehPage = this.pages[pageNum - 1] ;
                // if the specified page doesn't exist break from the loop
-               if(typeof tehPage == "undefined") break;
+               if(typeof tehPage === "undefined") break;
                pager.appendChild(this.createItem(pageNum)); 
                left --;
                counter ++;
@@ -119,7 +133,7 @@ Paginator.prototype.displayPagination = function(){
         var counter = start -1;
         while(left > 0){
                 var tehPage = this.pages[counter] ;  
-                if(typeof tehPage == "undefined") break;
+                if(typeof tehPage === "undefined") break;
                         pager.insertBefore(this.createItem(counter), pager.firstChild);
 
                 counter --;
@@ -142,12 +156,12 @@ Paginator.prototype.init = function(){
     this.displayActivePage();
     this.displayPagination();
     this.setHandlers();
-}
+};
 
 Paginator.prototype.setActivePage = function(_pageNum){
-    if(typeof _pageNum == "number"){
+    if(typeof _pageNum === "number"){
         var pageNum = parseInt(_pageNum);
-        if(typeof this.pages[pageNum - 1] == "undefined") throw "Page #" + pageNum + " does not exist.";
+        if(typeof this.pages[pageNum - 1] === "undefined") throw "Page #" + pageNum + " does not exist.";
         this.deactivatePage();
         this.activePage = parseInt(pageNum);
         this.displayPagination();
@@ -167,7 +181,7 @@ Paginator.prototype.deactivatePage = function(){
 
 Paginator.prototype.displayActivePage = function(){
     this.pages[this.activePage - 1].className = this.pages[this.activePage - 1].className.replace('inactive', 'active');
-}
+};
 
 
 Paginator.prototype.generatePages = function(){
@@ -176,15 +190,15 @@ Paginator.prototype.generatePages = function(){
     var pageChunks = this.chunk(articles, this.perPage);
 
     for(var i = 0; i < pageChunks.length; i ++){
-        var page = document.createElement('div');
-        page.className = 'page inactive';
-        for(var a = 0; a < pageChunks[i].length; a ++){
-            page.appendChild(pageChunks[i][a]);
-        }
+                var page = document.createElement('div');
+                page.className = 'page inactive';
+                for(var a = 0; a < pageChunks[i].length; a ++){
+                        page.appendChild(pageChunks[i][a]);
+                }
 
-        this.articlesContainer.appendChild(page);
-        this.pages.push(page);
-}
+                this.articlesContainer.appendChild(page);
+                this.pages.push(page);
+        }
 
 };
 
