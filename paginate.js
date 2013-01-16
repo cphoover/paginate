@@ -89,6 +89,12 @@ Paginator.prototype.createItem = function(_contents, _class){
 
 //@todo refactor the shit out of this stinky ass function.
 Paginator.prototype.displayPagination = function(){
+        //if there is isn't more than 1 page we don't need to show the pager.
+        if(this.pages.length <= 1){
+                 this.paginationContainer.innerHTML = ""
+                return true;
+        };
+
         var numPageLinks = (this.pages.length < this.numItems) ? this.pages.length : this.numItems;
 
         var pager = document.createElement('ul');
