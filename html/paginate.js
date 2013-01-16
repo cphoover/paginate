@@ -1,5 +1,4 @@
 
-
 Paginator = function(_selector, _paginationSelector){
     this.numItems = 10;
     this.articlesContainer = document.querySelector(_selector);
@@ -30,7 +29,7 @@ Paginator.prototype.removeEvent = function( obj, type, fn ) {
 
 Paginator.prototype.setHandlers = function(){
         var self = this;
-        this.addEvent(document.querySelector('#article-pagination'), 'click', function(e){
+        this.addEvent(this.paginationContainer, 'click', function(e){
                         var linkContents = e.target.innerHTML.replace(/(<([^>]+)>)/ig,"");
 
                         if(linkContents == 'Start'){
