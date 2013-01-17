@@ -114,3 +114,4 @@ Todo
 -------------
 * add callbacks for when page is changed to start and end
 * simplify the displayPagination function
+* add ability to save state with jquery bbq.
