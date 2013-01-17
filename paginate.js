@@ -7,7 +7,7 @@ Paginator = function(_selector, _paginationSelector){
     this.paginationContainer = document.getElementById(_paginationSelector);
 
     this.activePage = 1;
-    this.perPage = 5;
+    this.perPage = 3;
     this.pages = new Array();
 
     this.init();
@@ -98,6 +98,8 @@ Paginator.prototype.displayPagination = function(){
         var numPageLinks = (this.pages.length < this.numItems) ? this.pages.length : this.numItems;
 
         var pager = document.createElement('ul');
+        //@todo make this a configurable option
+        pager.className = "paginate";
 
         var middle = Math.round(numPageLinks / 2);
 
