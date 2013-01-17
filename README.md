@@ -51,7 +51,7 @@ Paramaters
 
 Simple Usage Example
 -------------
-    var pagination = new Paginator('list','pagination' {onAfter: pageChanged );
+    var pagination = new Paginator('list','pagination', {onAfter: pageChanged );
 
 Configurable Options
 -------------
