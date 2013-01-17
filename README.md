@@ -68,5 +68,5 @@ Configurable Options
 
 Todo
 -------------
-add callbacks for when page is changed to start and end
-simplify the displayPagination function
+* add callbacks for when page is changed to start and end
+* simplify the displayPagination function
