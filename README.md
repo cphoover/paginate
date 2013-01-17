@@ -3,6 +3,15 @@ paginate
 
 A javascript implementation of "Joomla Style" pagination.
 
+    new Paginator(_selector, _paginationSelector, _options);
+
+Simple Usage Example
+-------------
+    var pagination = new Paginator('list','pagination' {onAfter: pageChanged );
+
+Configurable Options
+-------------
+
 <table border=1>
   <tbody>
     <!-- Results table headers -->
@@ -56,3 +65,8 @@ A javascript implementation of "Joomla Style" pagination.
     </tr>
   </tbody>
 </table>
+
+Todo
+-------------
+add callbacks for when page is changed to start and end
+simplify the displayPagination function
