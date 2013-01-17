@@ -1,13 +1,39 @@
 ;
-Paginator = function(_selector, _paginationSelector){
-
-    this.numItems = 5;
+Paginator = function(_selector, _paginationSelector, _options){
     
-    this.articlesContainer = document.getElementById(_selector);
+    _options = typeof _options === "object" ? _options : {};
+
+/*      
+ * Testing callbacks
+ */
+
+/*
+    _options.onInit    = function(){console.log('initialized');};
+    _options.onBefore  = function(){console.log('Before page change');};
+    _options.onAfter   = function(){console.log('After page change');};
+*/
+
+    //         
+    this.initialized = false;
+
+    //config                                                                        //default values
+    this.pagerClass = typeof _options.pagerClass === "string" ? _options.pagerClass : "paginate";
+    this.numItems   = typeof _options.numItems   === "number" ? _options.numItems   : 10;
+    this.activePage = typeof _options.activePage === "number" ? _options.activePage : 1;
+    this.perPage    = typeof _options.perPage    === "number" ? _options.perPage    : 5;
+    
+    //callbacks
+    this.onInit      = typeof _options.onInit   === "function" ? _options.onInit    : false;  //fires after the pagination has been created
+    this.onBefore    = typeof _options.onBefore === "function" ? _options.onBefore  : false;  //fires before the page is changed
+    this.onAfter     = typeof _options.onAfter  === "function" ? _options.onAfter   : false;  //fires after the page is changed
+   
+    //@todo implement these callbacks
+//  this.onStart     = typeof _options.onStart  === "function" ? _options.onStart   : false;  //fires after the pagination has set the active page to the first slide
+//  this.onEnd       = typeof _options.onEnd    === "function" ? _options.onEnd     : false;  //fires after the pagination has set the active page to the last slide
+    
+    this.articlesContainer   = document.getElementById(_selector);
     this.paginationContainer = document.getElementById(_paginationSelector);
 
-    this.activePage = 1;
-    this.perPage = 3;
     this.pages = new Array();
 
     this.init();
@@ -99,7 +125,7 @@ Paginator.prototype.displayPagination = function(){
 
         var pager = document.createElement('ul');
         //@todo make this a configurable option
-        pager.className = "paginate";
+        pager.className = this.pagerClass;
 
         var middle = Math.round(numPageLinks / 2);
 
@@ -164,12 +190,19 @@ Paginator.prototype.init = function(){
     this.displayActivePage();
     this.displayPagination();
     this.setHandlers();
+    this.initialized = true;
+  
+    if(this.onInit){ this.onInit(); }
 };
 
 Paginator.prototype.setActivePage = function(_pageNum){
     if(typeof _pageNum === "number"){
         var pageNum = parseInt(_pageNum);
         if(typeof this.pages[pageNum - 1] === "undefined") throw "Page #" + pageNum + " does not exist.";
+        
+        
+        if(this.onBefore){ this.onBefore(); }
+        
         this.deactivatePage();
         this.activePage = parseInt(pageNum);
         this.displayPagination();
@@ -189,6 +222,7 @@ Paginator.prototype.deactivatePage = function(){
 
 Paginator.prototype.displayActivePage = function(){
     this.pages[this.activePage - 1].className = this.pages[this.activePage - 1].className.replace('inactive', 'active');
+    if(this.initialized && this.onAfter){this.onAfter();}
 };
 
 
